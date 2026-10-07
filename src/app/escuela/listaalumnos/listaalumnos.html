@@ -2,14 +2,122 @@
 <br>
 <br>
 <br>
-<form class="max-w-sm mx-auto">
-  <label for="countries" class="block mb-2.5 text-sm font-medium text-heading">Select an option</label>
-  <select id="countries" class="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body">
-    <option selected>Choose a country</option>
-    <option value="US">United States</option>
-    <option value="CA">Canada</option>
-    <option value="FR">France</option>
-    <option value="DE">Germany</option>
-  </select>
-</form>
+<div class="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow">
+  <h1 class="text-3xl font-bold text-gray-900 mb-6">
+    Lista Alumnos
+  </h1>
+
+  <form [formGroup]="formulario">
+    <!-- Nombre -->
+    <div class="mb-5">
+ 
+      <label
+        for="mat"
+        class="block mb-2 text-sm font-medium text-gray-900"
+      >
+        Matrícula
+      </label>
+ 
+      <input
+        type="text"
+        id="mat"
+        name="mat"
+        formControlName="matricula"
+        required
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+               focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+        placeholder="Matrícula"
+      >
+
+      <br>
+
+      <label
+        for="name"
+        class="block mb-2 text-sm font-medium text-gray-900"
+      >
+        Nombre
+      </label>
+ 
+      <input
+        type="text"
+        id="name"
+        name="name"
+        formControlName="nombre"
+        required
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+               focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+        placeholder="Nombre"
+      >
+
+      <br>
+
+      <label
+        for="email"
+        class="block mb-2 text-sm font-medium text-gray-900"
+      >
+        Correo
+      </label>
+ 
+      <input
+        type="text"
+        id="email"
+        name="email"
+        formControlName="correo"
+        required
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+               focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+        placeholder="Correo"
+      >
+
+      <br>
+
+      <label
+        for="mate"
+        class="block mb-2 text-sm font-medium text-gray-900"
+      >
+        Materia
+      </label>
+ 
+      <input
+        type="text"
+        id="mate"
+        name="mate"
+        formControlName="materia"
+        required
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+               focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+        placeholder="Materia"
+      >
+ 
+ 
+      <!-- Botón -->
+      <div class="flex justify-center mt-5">
+ 
+        <button
+          type="submit"
+
+          (click="muestraAlumnos"
+
+          class="text-white bg-blue-700 hover:bg-blue-800
+                 focus:ring-4 focus:outline-none focus:ring-blue-300
+                 font-medium rounded-lg text-sm px-5 py-2.5
+                 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Registrar
+        </button>
+ 
+      </div>
+ 
+    </div>
+  </form>
+  <h2 class="text-2xl font-bold text-gray-900 mb-6">
+    Lista Alumnos
+  </h2>
+
+  <h3> Matricula: {{alumno.matricula}} </h3>
+  <h3> Nombre: {{alumno.nombre}} </h3>
+  <h3> Correo: {{alumno.correo}} </h3>
+  <h3> Materia: {{alumno.materia}} </h3>
+
+</div>
 
