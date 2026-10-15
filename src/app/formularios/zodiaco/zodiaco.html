@@ -8,7 +8,7 @@
 
     <div>
 
-      <form [formGroup]="formulario">
+      <form [formGroup]="formulario" (ngSubmit)="imprimir()">
 
         <fieldset class="border border-gray-400 p-5">
 
@@ -209,12 +209,31 @@
 
             <button
               type="submit"
-              (click)="imprimir()"
               class="text-white bg-blue-700 hover:bg-blue-800
                      focus:ring-4 focus:outline-none focus:ring-blue-300
                      font-medium rounded-lg text-sm px-5 py-2.5"
             >
               Imprimir
+            </button>
+
+            <button
+              type="button"
+              (click)="limpiar()"
+              class="text-white bg-blue-700 hover:bg-blue-800
+                     focus:ring-4 focus:outline-none focus:ring-blue-300
+                     font-medium rounded-lg text-sm px-5 py-2.5"
+            >
+              Limpiar
+            </button>
+
+            <button
+              type="button"
+              [routerLink]="['/formularios/registros']"
+              class="text-white bg-blue-700 hover:bg-blue-800
+                     focus:ring-4 focus:outline-none focus:ring-blue-300
+                     font-medium rounded-lg text-sm px-5 py-2.5"
+            >
+              Ver Registros
             </button>
 
           </div>

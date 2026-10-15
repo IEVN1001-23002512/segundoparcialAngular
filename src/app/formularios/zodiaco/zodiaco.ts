@@ -1,16 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { IZodiaco } from './interface';
+import { IZodiaco, IRegistroZ } from './interface';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
-  imports: [FormsModule, ReactiveFormsModule],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, RouterLink],
   selector: 'app-zodiaco',
   styleUrl: './zodiaco.css',
   templateUrl: './zodiaco.html',
 })
-export class Zodiaco {
+export class Zodiaco implements OnInit {
   formulario!: FormGroup;
-  usuario:IZodiaco={
+
+  usuario: IZodiaco = {
     nombre: '',
     apaterno: '',
     amaterno: '',
@@ -20,82 +23,145 @@ export class Zodiaco {
     sexo: ''
   };
 
-  edad: number=0;
-  signo: string='';
-  imagen: string='';
-  mostrar: boolean=false;
+  registro: IRegistroZ[] = [];
 
-  ngOnInit():void{
+  nuevoUsuario: IZodiaco = {
+    nombre: '',
+    apaterno: '',
+    amaterno: '',
+    dia: 0,
+    mes: 0,
+    anio: 0,
+    sexo: ''
+  };
+
+  edad: number = 0;
+  signo: string = '';
+  imagen: string = '';
+  mostrar: boolean = false;
+
+  ngOnInit(): void {
+
     this.formulario = new FormGroup({
-    nombre: new FormControl('', Validators.required),
-    apaterno: new FormControl('', Validators.required),
-    amaterno: new FormControl('', Validators.required),
-    dia: new FormControl('', [
-      Validators.required,
-      Validators.min(1),
-      Validators.max(31)
-    ]),
-    mes: new FormControl('', [
-      Validators.required,
-      Validators.min(1),
-      Validators.max(12)
-    ]),
-    anio: new FormControl('', [
-      Validators.required,
-      Validators.min(1900),
-      Validators.max(new Date().getFullYear())
-    ]),
-    sexo: new FormControl('', Validators.required)
+      nombre: new FormControl('', Validators.required),
+      apaterno: new FormControl('', Validators.required),
+      amaterno: new FormControl('', Validators.required),
+
+      dia: new FormControl('', [
+        Validators.required,
+        Validators.min(1),
+        Validators.max(31)
+      ]),
+
+      mes: new FormControl('', [
+        Validators.required,
+        Validators.min(1),
+        Validators.max(12)
+      ]),
+
+      anio: new FormControl('', [
+        Validators.required,
+        Validators.min(1900),
+        Validators.max(new Date().getFullYear())
+      ]),
+
+      sexo: new FormControl('', Validators.required)
     });
+
+    this.cargarUsuarios();
   }
 
-  imprimir(): void{
+  imprimir(): void {
+
     if (this.formulario.invalid) {
-
       this.formulario.markAllAsTouched();
-
       this.mostrar = false;
 
-      alert('Debes llenar todos los campos y seleccionar tu sexo antes de imprimir.');
+      alert(
+        'Debes llenar todos los campos y seleccionar tu sexo antes de imprimir.'
+      );
 
       return;
-
     }
 
-  const dia = Number(this.formulario.value.dia);
-  const mes = Number(this.formulario.value.mes);
-  const anio = Number(this.formulario.value.anio);
+    const dia = Number(this.formulario.value.dia);
+    const mes = Number(this.formulario.value.mes);
+    const anio = Number(this.formulario.value.anio);
 
-  const fecha = new Date(anio, mes - 1, dia);
-  const hoy = new Date();
+    const fecha = new Date(anio, mes - 1, dia);
+    const hoy = new Date();
 
-  hoy.setHours(0, 0, 0, 0);
+    hoy.setHours(0, 0, 0, 0);
 
-  if (
-    fecha.getDate() !== dia ||
-    fecha.getMonth() + 1 !== mes ||
-    fecha.getFullYear() !== anio ||
-    fecha > hoy
-  ) {
+    if (
+      fecha.getDate() !== dia ||
+      fecha.getMonth() + 1 !== mes ||
+      fecha.getFullYear() !== anio ||
+      fecha > hoy
+    ) {
+      this.mostrar = false;
+      alert('Ingresa una fecha de nacimiento válida.');
+      return;
+    }
 
-    this.mostrar = false;
+    this.nuevoUsuario = {
+      nombre: String(this.formulario.value.nombre).trim(),
+      apaterno: String(this.formulario.value.apaterno).trim(),
+      amaterno: String(this.formulario.value.amaterno).trim(),
+      dia: dia,
+      mes: mes,
+      anio: anio,
+      sexo: this.formulario.value.sexo
+    };
 
-    alert('Ingresa una fecha de nacimiento válida.');
+    if (
+      !this.nuevoUsuario.nombre ||
+      !this.nuevoUsuario.apaterno ||
+      !this.nuevoUsuario.amaterno
+    ) {
+      this.mostrar = false;
+      alert('Escribe tu nombre y ambos apellidos.');
+      return;
+    }
 
-    return;
+    this.usuario = { ...this.nuevoUsuario };
+
+    this.calcularEdad();
+    this.calcularSigno();
+
+    const nuevoRegistro: IRegistroZ = {
+      ...this.usuario,
+      edad: this.edad,
+      signo: this.signo,
+      imagen: this.imagen
+    };
+
+    this.registro.push(nuevoRegistro);
+
+    this.guardarRegistros();
+
+    this.mostrar = true;
+  }
+
+  guardarRegistros(): void {
+
+    localStorage.setItem(
+      'registrosZodiaco',
+      JSON.stringify(this.registro)
+    );
 
   }
 
-    this.usuario.nombre = this.formulario.value.nombre;
-    this.usuario.apaterno = this.formulario.value.apaterno;
-    this.usuario.amaterno = this.formulario.value.amaterno;
-    this.usuario.dia = this.formulario.value.dia;
-    this.usuario.mes = this.formulario.value.mes;
-    this.usuario.anio = this.formulario.value.anio;
-    this.usuario.sexo = this.formulario.value.sexo;
-    this.mostrar = true;
-    this.calcularEdad();
-    this.calcularSigno();
+  cargarUsuarios(): void {
+
+    const datos = localStorage.getItem('registrosZodiaco');
+
+    if (datos) {
+      this.registro = JSON.parse(datos) as IRegistroZ[];
+    } else {
+      this.registro = [];
+    }
+
   }
 
   calcularEdad(): void {
@@ -109,14 +175,15 @@ export class Zodiaco {
 
     if (
       mesActual < this.usuario.mes ||
-      (mesActual === this.usuario.mes &&
-       diaActual < this.usuario.dia)
+      (
+        mesActual === this.usuario.mes &&
+        diaActual < this.usuario.dia
+      )
     ) {
       this.edad--;
     }
 
   }
-
 
   calcularSigno(): void {
 
@@ -153,7 +220,39 @@ export class Zodiaco {
     const posicion = (this.usuario.anio - 4) % 12;
 
     this.signo = signos[posicion];
-
     this.imagen = imagenes[posicion];
+
   }
+
+  limpiar(): void {
+
+    this.formulario.reset({
+      nombre: '',
+      apaterno: '',
+      amaterno: '',
+      dia: '',
+      mes: '',
+      anio: '',
+      sexo: ''
+    });
+
+    this.nuevoUsuario = {
+      nombre: '',
+      apaterno: '',
+      amaterno: '',
+      dia: 0,
+      mes: 0,
+      anio: 0,
+      sexo: ''
+    };
+
+    this.usuario = { ...this.nuevoUsuario };
+
+    this.edad = 0;
+    this.signo = '';
+    this.imagen = '';
+    this.mostrar = false;
+
+  }
+
 }

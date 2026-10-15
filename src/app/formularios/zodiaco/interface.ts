@@ -7,3 +7,9 @@ export interface IZodiaco {
   anio: number;
   sexo: string;
 }
+
+export interface IRegistroZ extends IZodiaco {
+  edad: number;
+  signo: string;
+  imagen: string;
+}
